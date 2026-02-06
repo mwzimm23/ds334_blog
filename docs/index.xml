@@ -10,10 +10,10 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog built with Quarto</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Wed, 28 Jan 2026 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 02 Feb 2026 05:00:00 GMT</lastBuildDate>
 <item>
-  <title>Post With Code</title>
-  <dc:creator>Harlow Malloc</dc:creator>
+  <title>Blog Post 1: Analyzing State Gun Violence</title>
+  <dc:creator>Mason Zimmer</dc:creator>
   <link>https://your-website-url.example.com/posts/post-with-code/</link>
   <description><![CDATA[ 
 
@@ -21,19 +21,112 @@
 
 
 
-<p>This is a post with executable code.</p>
+<p>Introduction:</p>
+<p>In this post we will be analyzing gun violence in major cities across the United States. The data is from the Gun Violence Data Hub which has collected incident reports since 2014 to compile a data set to better educate the populus on which cities are dangerous. Further we will also be using data from Giffords Law Center, a organization that grades states based on how effective their gun control laws are.</p>
+<p>We are most interested in the victims_killed, state, city_or_county, and grade variables. There are a total of 94000 observations of gun violence the in data set. My main question for this project was, Do states with a higher gun control law grade have less gun violence per year?</p>
+<p>The links for the data webpages are here. https://giffords.org/lawcenter/resources/scorecard/ https://datahub.thetrace.org/dataset/city-gun-violence-trends/</p>
+<p>Visualization:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="dv" style="color: #AD0000;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">1</span> <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
 background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">data =</span> reorderedDeaths_df, <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">1</span></span></code></pre></div></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> name, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> avg_deaths_per_year, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> Grade))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shape =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_label</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> Grade), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">show.legend =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"State and Rating"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_flip</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"How Dangerous Cities Correlate to their State's Gun Control Grade"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Average Gun Violence Victims per year from 2014-2026"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Top 10 Most Dangerous Cities in the USA"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_light</span>()</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post-with-code/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+</div>
+<p>Of the top 10 cities with the most gun violence per year, half of them have a state gun control rating of a B or above. Most compelling is the city with the most victims per year, Chicago Illinois, also has the highest gun control grade on the list. Unsurprisingly however the other 5 states have the worst gun control grades, although Chicago nearly doubles the number of victims Houston has per year.</p>
+<p>Conclusion:</p>
+<p>The flaws of this data however is that it most likely includes self defense and suicides, which would not be considered “Gun Violence” by the modern standard of shootings, further the data cannot include cases where the victims have not been recovered. Similarly the data set that grades each State could be biased given that a grade like this is difficult to quantify and obviously does not take into account the number of victims per year, rather they are only interested in the legislature. If I had additional time and data I would like to see what states have the least amount of violence and their grades aswell as what contributes to making those states more safe.</p>
+<p>Connection to class ideas: By creating a visual which had values starting at zero I was able to create a more honest depiction of the data. By removing the key, changing the theme and setting a coord flip I reduced the amount of clutter on the screen. I labled my axis and title to help the reader understand the visuals and I limited the data to the top 10 to reduce visual strain. I also scrapped data from websites and joined multiple data sets together to create my visualizations.</p>
 
 
 
@@ -42,7 +135,7 @@ font-style: inherit;">1</span></span></code></pre></div></div>
   <category>code</category>
   <category>analysis</category>
   <guid>https://your-website-url.example.com/posts/post-with-code/</guid>
-  <pubDate>Wed, 28 Jan 2026 05:00:00 GMT</pubDate>
+  <pubDate>Mon, 02 Feb 2026 05:00:00 GMT</pubDate>
   <media:content url="https://your-website-url.example.com/posts/post-with-code/image.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
