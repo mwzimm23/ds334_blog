@@ -76,7 +76,7 @@ Of the top 10 cities with the most gun violence per year, half of them have a st
 Conclusion:
 
 The flaws of this data however is that it most likely includes self defense and suicides, which would not be considered "Gun Violence" by the modern standard of shootings, further the data cannot include cases where the victims have not been recovered. Similarly the data set that grades each State could be biased given that a grade like this is difficult to quantify and obviously does not take into account the number of victims per year, rather they are only interested in the legislature. 
-If I had additional time and data I would like to see what states have the least amount of violence and their grades aswell as what contributes to making those states more safe. 
+If I had additional time and data I would like to see what states have the least amount of violence and their grades as well as what contributes to making those states more safe. 
 
 Connection to class ideas:
 
