@@ -1,0 +1,11 @@
+---
+title: "intro_to_git"
+format: html
+---
+
+```{r}
+library(tidyverse)
+ggplot(data = mtcars, aes(x = mpg))+
+  geom_histogram(colour = "black", fill = "white", bins = 15)
+```
+

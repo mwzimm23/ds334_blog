@@ -10,7 +10,9 @@ library(rvest)
 library(dplyr)
 library(tidyverse)
 library(ggplot2)
-##Creating the Dataset
+library(scales)
+library(usmap)
+
 
 ##Pulling and joining the grade dataset
 url <- "https://worldrainforests.com/deforestation/archive/United_States.htm"
@@ -33,60 +35,18 @@ timber_table <- table_data[[5]] |> mutate(across(matches("ha|%"), ~ as.numeric(g
     rename(state = 'Sub-national admin area 1',OriginalCover = 'Tree cover extent(2001)ha', Loss2001_05 = 'Tree cover loss(2001-05)ha', Loss2006_10 = 'Tree cover loss(2006-10)ha', Loss2011_15 = 'Tree cover loss(2011-15)ha', Loss2016_20 = 'Tree cover loss(2016-20)ha', TotalCoverLoss = 'Tree cover loss(2001-20)ha', Loss_percent = 'Tree cover loss(2001-20)%')
 
 timber_table
-
-library(usmap)
-
+##Taking the Map
 states_data <- us_map(regions = "states")
 head(timber_table)
-
-
+##Joining map to data
 state_full <- left_join(states_data, timber_table, by = c("full" = "state"))
 
-
-
-
-##Extent vs loss
+##Extent vs loss data making
 timberfordiff<-timber_table|>pivot_longer(
     cols = c(OriginalCover, TotalCoverLoss),
     names_to = "When",
     values_to = "hectares"
   )
-
-
-
-ggplot(data = timberfordiff, aes(x = state, y = hectares, fill = When))+
-  geom_col(position = position_dodge(width = 0.8)) +
-  labs(x = "State", y = "Tree cover loss (ha)", fill = "Period") +
-  theme_minimal()+
-  coord_flip()+
-  scale_fill_manual(
-    values = c(OriginalCover = "blue",
-               TotalCoverLoss = "red"))
-  
-
-
-
-
-##Cover loss by percent
-state_full <- state_full |>
-  mutate(Total_cover_loss_percent = as.numeric(gsub("[,%]", "", `Tree cover loss(2001-20)%`)))
-
-ggplot(state_full) +
-  geom_sf(aes(fill = Total_cover_loss_percent), color = "black") +
-  theme_void() +
-  scale_fill_viridis_c(option = "plasma")
-
-##Cover loss by hecters
-library(scales)
-state_full <- state_full |>
-  mutate(Total_cover_loss = as.numeric(gsub("[,%]", "", `Tree cover loss(2001-20)ha`)))
-
-ggplot(state_full) +
-  geom_sf(aes(fill = Total_cover_loss), color = "black") +
-  theme_void() +
-  scale_fill_viridis_c(option = "plasma",
-    name = "Tree cover loss (ha)",         
-    labels = comma)
 
 ```
 
@@ -100,7 +60,7 @@ The links for the data webpages are here. https://worldrainforests.com/deforesta
 
 Visualizations:
 ```{r}
-##Extent vs loss
+##Extent vs loss Graphic
 ggplot(data = timberfordiff, aes(x = state, y = hectares, fill = When))+
   geom_col(position = position_dodge(width = 0.8)) +
   labs(x = "State", y = "Tree cover loss (ha)", fill = "Period") +
@@ -114,7 +74,7 @@ ggplot(data = timberfordiff, aes(x = state, y = hectares, fill = When))+
 
 ##Cover loss by hecters
 ggplot(state_full) +
-  geom_sf(aes(fill = Total_cover_loss), color = "black") +
+  geom_sf(aes(fill = TotalCoverLoss), color = "black") +
   theme_void() +
   scale_fill_viridis_c(option = "plasma",
     name = "Tree cover loss (ha)",         
@@ -123,7 +83,7 @@ ggplot(state_full) +
 
 ##Cover loss by percent
 ggplot(state_full) +
-  geom_sf(aes(fill = Total_cover_loss_percent), color = "black") +
+  geom_sf(aes(fill = Loss_percent), color = "black") +
   theme_void() +
   scale_fill_viridis_c(option = "plasma",
     name = "Total Tree Cover Loss Percentage",         
