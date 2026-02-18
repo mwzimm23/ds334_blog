@@ -1,0 +1,112 @@
+---
+title: "Blog Post 2: Deforestation Analysis"
+author: "Mason Zimmer"
+date: "2026-02-17"
+categories: [news, code, analysis]
+image: "image.jpg"
+---
+```{r, include=FALSE}
+library(rvest)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(usmap)
+
+
+##Pulling and joining the grade dataset
+url <- "https://worldrainforests.com/deforestation/archive/United_States.htm"
+page <- read_html(url)
+
+table_data <- page |>
+  html_elements("table")|>
+  html_table(fill = TRUE)
+
+timber_table <- table_data[[5]] |> mutate(across(matches("ha|%"), ~ as.numeric(gsub("[,%]", "", .))))|>
+  type_convert(
+    col_types = cols(
+      `Sub-national admin area 1` = col_character(),
+      `Tree cover loss(2001-05)ha` = col_double(),
+      `Tree cover loss(2006-10)ha` = col_double(),
+      `Tree cover loss(2011-15)ha` = col_double(),
+      `Tree cover loss(2016-20)ha` = col_double(),
+      `Tree cover loss(2001-20)ha` = col_double(),
+      `Tree cover loss(2001-20)%` = col_double()))|>
+    rename(state = 'Sub-national admin area 1',OriginalCover = 'Tree cover extent(2001)ha', Loss2001_05 = 'Tree cover loss(2001-05)ha', Loss2006_10 = 'Tree cover loss(2006-10)ha', Loss2011_15 = 'Tree cover loss(2011-15)ha', Loss2016_20 = 'Tree cover loss(2016-20)ha', TotalCoverLoss = 'Tree cover loss(2001-20)ha', Loss_percent = 'Tree cover loss(2001-20)%')
+
+timber_table
+##Taking the Map
+states_data <- us_map(regions = "states")
+head(timber_table)
+##Joining map to data
+state_full <- left_join(states_data, timber_table, by = c("full" = "state"))
+
+##Extent vs loss data making
+timberfordiff<-timber_table|>pivot_longer(
+    cols = c(OriginalCover, TotalCoverLoss),
+    names_to = "When",
+    values_to = "hectares"
+  )
+
+```
+
+Introduction:
+
+In this post we will be analyzing deforestation across the United States. The data is from Worldrainforests.com, an extension of mongabay news, which provides global details about deforestion. For this blog the site provides the data of how many hectares of tree cover has the United States lost since 2001.
+
+We are most interested in the Sub-national admin area 1, Tree cover loss(2001-05)ha, Tree cover loss(2006-10)ha, Tree cover loss(2011-15)ha, Tree cover loss(2016-20)ha, Tree cover loss(2001-20)ha, and Tree cover loss(2001-20)%' variables, which I have renamed and recoded to be easier to understand. There are a total of 51 entries in the in data set, pretaining to each of the 50 states and the District of columbia, while there are 7 columns that represent the control tree cover, 5 year increments of tree cover loss, total cover loss, and percent cover loss. My main question for this project was, How does the amount of timber harvested compare to the amount of tree cover the states had in 2001?
+
+The links for the data webpages are here. https://worldrainforests.com/deforestation/archive/United_States.htm
+
+Visualizations:
+```{r}
+##Extent vs loss Graphic
+ggplot(data = timberfordiff, aes(x = state, y = hectares, fill = When))+
+  geom_col(position = position_dodge(width = 0.8)) +
+  labs(x = "State", y = "Tree cover loss (ha)", fill = "Period") +
+  theme_minimal()+
+  coord_flip()+
+  scale_fill_manual(
+    values = c(OriginalCover = "blue",
+               TotalCoverLoss = "red"))+
+  labs(title = "Comparing Tree Coverage in 2001 to the Total Amount Harvested from 2001-2020")
+
+
+##Cover loss by hecters
+ggplot(state_full) +
+  geom_sf(aes(fill = TotalCoverLoss), color = "black") +
+  theme_void() +
+  scale_fill_viridis_c(option = "plasma",
+    name = "Tree cover loss (ha)",         
+    labels = comma)+
+  labs(title = " Total Tree Cover Loss from 2001-2020 in Hectares")
+
+##Cover loss by percent
+ggplot(state_full) +
+  geom_sf(aes(fill = Loss_percent), color = "black") +
+  theme_void() +
+  scale_fill_viridis_c(option = "plasma",
+    name = "Total Tree Cover Loss Percentage",         
+    labels = comma)+
+  labs(title = "Percentage of Total Tree Cover Loss from 2001-2020")
+```
+
+Some interesting findings include, the state that harvests the most timber is Alaska, however by percent of cover loss Alaska has approximately 12-15 percent loss. Similarly, Florida harvests far less wood than many states by hectares, but by percent of forest cover they are far higher than the national average. Lastly, Georgia has both a high tree cover loss in hectares statistic, and a high tree cover loss percentage, which means that they produce alot of timber while also draining their natural resources far more than all other states. 
+
+Conclusion:
+
+The flaws of this data however is that it did not include the type of deforestation and cutting practices each state uses, which would have been very compelling to see how different cutting processes impact how much timber is harvested. If I had additional time and data I woukd have liked to map out the different types of clear cutting and states average hectares per year cleared, I beleive these would create a more rounded and well informed visualization.
+
+Connection to class ideas:
+
+By creating a visual which had values starting at zero I was able to create a more honest depiction of the data. By Coord flipping I made the bar graph more easy to understand. I mapped the data onto the United States including Alaska and Hawaii because I knew they would be important to visualize. I also had to recode the data to double instead of characters, while also removing the % sign which caused me trouble. I also scrapped data from websites and joined multiple data sets together to create my visualizations.
+
+
+
+
+
+
+
+
+
+
