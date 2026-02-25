@@ -5,16 +5,16 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>ds334_blog</title>
+<title>Mason Zimmer&#39;s Data Visualization Blog</title>
 <link>https://your-website-url.example.com/</link>
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
-<description>A blog built with Quarto</description>
+<description>Data Science 334 Semester Blogs</description>
 <generator>quarto-1.8.25</generator>
 <lastBuildDate>Tue, 17 Feb 2026 05:00:00 GMT</lastBuildDate>
 <item>
   <title>Blog Post 2: Deforestation Analysis</title>
   <dc:creator>Mason Zimmer</dc:creator>
-  <link>https://your-website-url.example.com/posts/post-with-code/BlogPost2.html</link>
+  <link>https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2.html</link>
   <description><![CDATA[ 
 
 
@@ -114,7 +114,7 @@ font-style: inherit;">"Comparing Tree Coverage in 2001 to the Total Amount Harve
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/post-with-code/BlogPost2_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -171,7 +171,7 @@ font-style: inherit;">" Total Tree Cover Loss from 2001-2020 in Hectares"</span>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/post-with-code/BlogPost2_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -228,7 +228,7 @@ font-style: inherit;">"Percentage of Total Tree Cover Loss from 2001-2020"</span
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/post-with-code/BlogPost2_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -245,14 +245,14 @@ font-style: inherit;">"Percentage of Total Tree Cover Loss from 2001-2020"</span
   <category>news</category>
   <category>code</category>
   <category>analysis</category>
-  <guid>https://your-website-url.example.com/posts/post-with-code/BlogPost2.html</guid>
+  <guid>https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2.html</guid>
   <pubDate>Tue, 17 Feb 2026 05:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/post-with-code/image.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://your-website-url.example.com/posts/post-with-code/blogpost2/deforestation.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Blog Post 1: Analyzing State Gun Violence</title>
   <dc:creator>Mason Zimmer</dc:creator>
-  <link>https://your-website-url.example.com/posts/post-with-code/BlogPost1.html</link>
+  <link>https://your-website-url.example.com/posts/post-with-code/Blog post 1/BlogPost1.html</link>
   <description><![CDATA[ 
 
 
@@ -356,7 +356,7 @@ font-style: inherit;">theme_light</span>()</span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/post-with-code/BlogPost1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/post-with-code/Blog post 1/BlogPost1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -373,30 +373,9 @@ font-style: inherit;">theme_light</span>()</span></code></pre></div></div>
   <category>news</category>
   <category>code</category>
   <category>analysis</category>
-  <guid>https://your-website-url.example.com/posts/post-with-code/BlogPost1.html</guid>
+  <guid>https://your-website-url.example.com/posts/post-with-code/Blog post 1/BlogPost1.html</guid>
   <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/post-with-code/image.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Welcome To My Blog</title>
-  <dc:creator>Tristan O&#39;Malley</dc:creator>
-  <link>https://your-website-url.example.com/posts/welcome/</link>
-  <description><![CDATA[ 
-
-
-
-
-
-<p>This is the first post in a Quarto blog. Welcome!</p>
-<p><img src="https://your-website-url.example.com/posts/welcome/thumbnail.jpg" class="img-fluid"></p>
-<p>Since this post doesn’t specify an explicit <code>image</code>, the first image in the post will be used in the listing page of posts.</p>
-
-
-
- ]]></description>
-  <category>news</category>
-  <guid>https://your-website-url.example.com/posts/welcome/</guid>
-  <pubDate>Sun, 25 Jan 2026 05:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/post-with-code/Blog post 1/lawphoto.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
