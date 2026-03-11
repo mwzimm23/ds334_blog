@@ -1,0 +1,90 @@
+---
+title: "Blog Post 3: Endangered Species Analysis"
+author: "Mason Zimmer"
+date: "2026-03-11"
+categories: [news, code, analysis]
+image: "deforestation.jpg"
+---
+
+```{r, include=FALSE}
+library(rvest)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(sf)
+##Reading in the Data
+
+Species <- read.csv("~/Desktop/ds334/data/FixedSpecies.csv")
+
+species<-tibble(Species)
+
+head(species)
+
+##Building the datasets
+species<- species|>mutate(Location = Location.s.)
+species<-species|> group_by(Location)|>mutate(count = n())|>ungroup()|>mutate(Location = fct_reorder(Location, count))
+world_map <- map_data("world")
+Species_full <- full_join(species, world_map, by = c("Location" = "region"))
+
+##Building the dataset
+species25 <- species |>
+  count(Location, name = "count") |>
+  arrange(desc(count)) |>
+  slice(1:10)|>mutate(Location = fct_reorder(Location, count))
+
+```
+
+Introduction:
+
+In this post we will be analyzing Critically Endangered Species (C.E.S) on a global scale. The data is from Kaggle.com, which provides millions of researched data sets for a multitude of projects. For this blog the site provides the data on the top 100 most critically endangered species with further insight on where they live, their estimated population and many more variables.
+
+We are most interested in the Species.Name, Common.Name, Type, Location, Threats, count, and Estimated.Population variables. There are a total of 100 entries in the in data set, pretaining to each of the C.E.S, while there are 9 columns that represent the individual data per species. My main question for this project was, What countries have the most critically endangered species, and what threats do those remaining individuals face?
+
+The links for the data webpage is here.
+
+https://www.kaggle.com/datasets/jvanark/endangered-species?resource=download
+
+Visualizations:
+
+```{r}
+##Graphic of Endangered Species per country
+ggplot(Species_full) +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = count),
+               color = "black", linewidth = 0.2) +
+  coord_fixed(1.3) +
+  theme_void() +
+  scale_fill_viridis_c(
+    option = "plasma",
+    name = "Endangerd Species Count"
+  ) +
+  labs(title = "Number of Critically Endangered Species per Country")
+
+
+##Endangered species per country
+ggplot(data = species25, aes(x =Location, y = count)) +
+  geom_col(aes(fill = Location))+
+  theme_minimal()+
+  labs(x = "Country", y = "Critically Endangered Species Count", title = "Barplot of C.E.S. by Country")+
+  coord_flip()+
+  theme(legend.position = "none")
+
+##Endangered Species in china
+ChinaSpecies<-species|>filter(Location == "China")|> select(Species.Name, Common.Name, Type, Location, Threats, Estimated.Population)
+
+ChinaSpecies
+
+```
+
+After exploring the data we find that China has the most C.E.S. on this list, with a total of 5 different species they make up 1/20 of the list. Within those Chinese species, three of them are trees: the Baishan Fir is threatened by agriculture swell as fire, the Picea Neoventchii, commonly referred to as the Hubei spruce, faces deforestation as a main threat, and finally the Qiaojia pine faces extinction due to its very small population size. These conifers have fewer than 50 remaining individuals combined!
+
+Further the only Mammalian C.E.S. in China is the Hainan black crested gibbon, with a total of 20 individuals remaining this species faces hunting as their largest threat.
+
+Lastly, and sadly similar to the Hainan gibbon, the Red River giant softshell turtle also faces critical levels of endangerment as there are a total of 3 individuals remaining, due to hunting, destruction of their land, and pollution of the Red River.
+
+Conclusion:
+
+The flaws of this data set however is that it did not include approximate population values that were necessarily helpful for constructing visualizations, if there had been approximate ranges, (e.g, \<50, \<100, \<150...), it would have been far more interesting to plot. If I had additional time and data I would have liked to create a plot that expressed how many species are at certain population levels, and see if their was a correlation between global position and C.E.S. level, I believe this would create a more compelling and thorough data exploration.
+
+Connection to class ideas:
+
+I mapped the data onto the World Map because I knew they would be important to visualize and see if endangered species cluster around certain areas of the world. By coordinate flipping I made the bar graph more easy to understand. I reordered the data so that the values of count were descending opposed to being randomized. I removed the legend so that it was not overfilling the screen with information. Finally I used full_join to bring both the world_map data and the species data into one cohesive data set.
