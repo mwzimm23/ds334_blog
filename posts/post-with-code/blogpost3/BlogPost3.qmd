@@ -3,7 +3,7 @@ title: "Blog Post 3: Endangered Species Analysis"
 author: "Mason Zimmer"
 date: "2026-03-11"
 categories: [news, code, analysis]
-image: "deforestation.jpg"
+image: "limpbiscut.jpg"
 ---
 
 ```{r, include=FALSE}

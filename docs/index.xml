@@ -10,7 +10,213 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science 334 Semester Blogs</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Tue, 17 Feb 2026 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 11 Mar 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Blog Post 3: Endangered Species Analysis</title>
+  <dc:creator>Mason Zimmer</dc:creator>
+  <link>https://your-website-url.example.com/posts/post-with-code/blogpost3/BlogPost3.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Introduction:</p>
+<p>In this post we will be analyzing Critically Endangered Species (C.E.S) on a global scale. The data is from Kaggle.com, which provides millions of researched data sets for a multitude of projects. For this blog the site provides the data on the top 100 most critically endangered species with further insight on where they live, their estimated population and many more variables.</p>
+<p>We are most interested in the Species.Name, Common.Name, Type, Location, Threats, count, and Estimated.Population variables. There are a total of 100 entries in the in data set, pretaining to each of the C.E.S, while there are 9 columns that represent the individual data per species. My main question for this project was, What countries have the most critically endangered species, and what threats do those remaining individuals face?</p>
+<p>The links for the data webpage is here.</p>
+<p>https://www.kaggle.com/datasets/jvanark/endangered-species?resource=download</p>
+<p>Visualizations:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">##Graphic of Endangered Species per country</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(Species_full) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_polygon</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> long, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> lat, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> group, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> count),</span>
+<span id="cb1-4">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_fixed</span>(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.3</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_viridis_c</span>(</span>
+<span id="cb1-8">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">option =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"plasma"</span>,</span>
+<span id="cb1-9">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Endangerd Species Count"</span></span>
+<span id="cb1-10">  ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Number of Critically Endangered Species per Country"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost3/BlogPost3_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">##Endangered species per country</span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> species25, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span>Location, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> count)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_col</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> Location))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Country"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Critically Endangered Species Count"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Barplot of C.E.S. by Country"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_flip</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"none"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost3/BlogPost3_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">##Endangered Species in china</span></span>
+<span id="cb3-2">ChinaSpecies<span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span>species<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(Location <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"China"</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(Species.Name, Common.Name, Type, Location, Threats, Estimated.Population)</span>
+<span id="cb3-3"></span>
+<span id="cb3-4">ChinaSpecies</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 6
+  Species.Name        Common.Name    Type  Location Threats Estimated.Population
+  &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt; &lt;fct&gt;    &lt;chr&gt;   &lt;chr&gt;               
+1 Abies beshanzuensis Baishan fir    Plan… China    Agricu… 5                   
+2 Nomascus hainanus   Hainan black … Mamm… China    Hunting 20                  
+3 Picea neoveitchii   -              Plan… China    Destru… Unknown             
+4 Pinus squamata      Qiaojia pine   Plan… China    Limite… &lt;25                 
+5 Rafetus swinhoei    Red River gia… Rept… China    Huntin… 3                   </code></pre>
+</div>
+</div>
+<p>After exploring the data we find that China has the most C.E.S. on this list, with a total of 5 different species they make up 1/20 of the list. Within those Chinese species, three of them are trees: the Baishan Fir is threatened by agriculture swell as fire, the Picea Neoventchii, commonly referred to as the Hubei spruce, faces deforestation as a main threat, and finally the Qiaojia pine faces extinction due to its very small population size. These conifers have fewer than 50 remaining individuals combined!</p>
+<p>Further the only Mammalian C.E.S. in China is the Hainan black crested gibbon, with a total of 20 individuals remaining this species faces hunting as their largest threat.</p>
+<p>Lastly, and sadly similar to the Hainan gibbon, the Red River giant softshell turtle also faces critical levels of endangerment as there are a total of 3 individuals remaining, due to hunting, destruction of their land, and pollution of the Red River.</p>
+<p>Conclusion:</p>
+<p>The flaws of this data set however is that it did not include approximate population values that were necessarily helpful for constructing visualizations, if there had been approximate ranges, (e.g, &lt;50, &lt;100, &lt;150…), it would have been far more interesting to plot. If I had additional time and data I would have liked to create a plot that expressed how many species are at certain population levels, and see if their was a correlation between global position and C.E.S. level, I believe this would create a more compelling and thorough data exploration.</p>
+<p>Connection to class ideas:</p>
+<p>I mapped the data onto the World Map because I knew they would be important to visualize and see if endangered species cluster around certain areas of the world. By coordinate flipping I made the bar graph more easy to understand. I reordered the data so that the values of count were descending opposed to being randomized. I removed the legend so that it was not overfilling the screen with information. Finally I used full_join to bring both the world_map data and the species data into one cohesive data set.</p>
+
+
+
+ ]]></description>
+  <category>news</category>
+  <category>code</category>
+  <category>analysis</category>
+  <guid>https://your-website-url.example.com/posts/post-with-code/blogpost3/BlogPost3.html</guid>
+  <pubDate>Wed, 11 Mar 2026 04:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/post-with-code/blogpost3/limpbiscut.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>Blog Post 2: Deforestation Analysis</title>
   <dc:creator>Mason Zimmer</dc:creator>
