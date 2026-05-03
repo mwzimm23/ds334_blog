@@ -1,6 +1,0 @@
----
-title: "Drought Prediction Blog Post"
-author: "Mason Zimmer"
-date: "2026-05-3"
-categories: [news, code, analysis]
----

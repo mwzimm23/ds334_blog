@@ -3,9 +3,8 @@ title: "Blog Post 2: Deforestation Analysis"
 author: "Mason Zimmer"
 date: "2026-02-17"
 categories: [news, code, analysis]
-image: "deforestation.jpg"
+image: "image.jpg"
 ---
-
 ```{r, include=FALSE}
 library(rvest)
 library(dplyr)
@@ -60,7 +59,6 @@ We are most interested in the Sub-national admin area 1, Tree cover loss(2001-05
 The links for the data webpages are here. https://worldrainforests.com/deforestation/archive/United_States.htm
 
 Visualizations:
-
 ```{r}
 ##Extent vs loss Graphic
 ggplot(data = timberfordiff, aes(x = state, y = hectares, fill = When))+
@@ -93,7 +91,7 @@ ggplot(state_full) +
   labs(title = "Percentage of Total Tree Cover Loss from 2001-2020")
 ```
 
-Some interesting findings include, the state that harvests the most timber is Alaska, however by percent of cover loss Alaska has approximately 12-15 percent loss. Similarly, Florida harvests far less wood than many states by hectares, but by percent of forest cover they are far higher than the national average. Lastly, Georgia has both a high tree cover loss in hectares statistic, and a high tree cover loss percentage, which means that they produce alot of timber while also draining their natural resources far more than all other states.
+Some interesting findings include, the state that harvests the most timber is Alaska, however by percent of cover loss Alaska has approximately 12-15 percent loss. Similarly, Florida harvests far less wood than many states by hectares, but by percent of forest cover they are far higher than the national average. Lastly, Georgia has both a high tree cover loss in hectares statistic, and a high tree cover loss percentage, which means that they produce alot of timber while also draining their natural resources far more than all other states. 
 
 Conclusion:
 
@@ -102,3 +100,13 @@ The flaws of this data however is that it did not include the type of deforestat
 Connection to class ideas:
 
 By creating a visual which had values starting at zero I was able to create a more honest depiction of the data. By Coord flipping I made the bar graph more easy to understand. I mapped the data onto the United States including Alaska and Hawaii because I knew they would be important to visualize. I also had to recode the data to double instead of characters, while also removing the % sign which caused me trouble. I also scrapped data from websites and joined multiple data sets together to create my visualizations.
+
+
+
+
+
+
+
+
+
+

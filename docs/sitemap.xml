@@ -1,35 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://your-website-url.example.com/posts/blogpost4/index.html</loc>
+    <lastmod>2026-05-03T21:29:08.199Z</lastmod>
+  </url>
+  <url>
     <loc>https://your-website-url.example.com/about.html</loc>
     <lastmod>2026-02-25T18:29:31.626Z</lastmod>
   </url>
   <url>
-    <loc>https://your-website-url.example.com/intro_to_git_push.html</loc>
-    <lastmod>2026-01-21T16:49:11.155Z</lastmod>
-  </url>
-  <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2.html</loc>
-    <lastmod>2026-02-25T18:22:17.674Z</lastmod>
+    <lastmod>2026-02-18T13:29:33.189Z</lastmod>
   </url>
   <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/Blog post 1/BlogPost1.html</loc>
     <lastmod>2026-02-25T18:21:19.424Z</lastmod>
   </url>
   <url>
-    <loc>https://your-website-url.example.com/BlogPost2.html</loc>
-    <lastmod>2026-02-18T13:29:33.189Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/index.html</loc>
-    <lastmod>2026-02-25T18:37:30.984Z</lastmod>
-  </url>
-  <url>
-    <loc>https://your-website-url.example.com/BlogPost3.html</loc>
-    <lastmod>2026-03-11T15:04:29.073Z</lastmod>
-  </url>
-  <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/blogpost3/BlogPost3.html</loc>
     <lastmod>2026-03-11T15:10:32.132Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-website-url.example.com/intro_to_git_push.html</loc>
+    <lastmod>2026-01-21T16:49:11.155Z</lastmod>
   </url>
 </urlset>
