@@ -140,12 +140,8 @@ ggplot() +
 
 ##Observe no values are over 100, which is the midpoint and the median from the last 30 years.
 ```
-Overall App
-![](images/clipboard-1286573709.png)
-Table View
-![](images/clipboard-3800726449.png)
-Selected State
-![](images/clipboard-620318681.png)
+
+Overall App ![](images/clipboard-1286573709.png) Table View ![](images/clipboard-3800726449.png) Selected State ![](images/clipboard-620318681.png)
 
 After exploring my app and data, drought is highly likely in the western United States this year. Due to decreased snowfall and lack of overall precipitation it will be imperative for dams to be opened to support ecosystems, agriculture, and human recreation.
 

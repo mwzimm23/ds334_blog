@@ -10,7 +10,7 @@
   </url>
   <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/blogpost2/BlogPost2.html</loc>
-    <lastmod>2026-02-18T13:29:33.189Z</lastmod>
+    <lastmod>2026-05-03T21:57:33.993Z</lastmod>
   </url>
   <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/Blog post 1/BlogPost1.html</loc>
@@ -23,5 +23,9 @@
   <url>
     <loc>https://your-website-url.example.com/intro_to_git_push.html</loc>
     <lastmod>2026-01-21T16:49:11.155Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-website-url.example.com/posts/post-with-code/blogpost4/index.html</loc>
+    <lastmod>2026-05-03T21:54:40.729Z</lastmod>
   </url>
 </urlset>
