@@ -26,6 +26,10 @@
   </url>
   <url>
     <loc>https://your-website-url.example.com/posts/post-with-code/blogpost4/index.html</loc>
-    <lastmod>2026-05-03T21:54:40.729Z</lastmod>
+    <lastmod>2026-05-03T22:03:31.183Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-website-url.example.com/index.html</loc>
+    <lastmod>2026-02-25T18:37:30.984Z</lastmod>
   </url>
 </urlset>
