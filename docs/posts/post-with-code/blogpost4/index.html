@@ -190,8 +190,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="introduction" class="level1">
-<h1>Introduction:</h1>
+<section id="drought-prediction-blog-post" class="level1">
+<h1>Drought Prediction Blog Post:</h1>
+<p>Introduction:</p>
 <p>This tool gives an immediate outlook on how a harvest and aquatic-recreational year will play out, as it uses snow water equivalent (SWE) data from 1991 to 2020 to then compare it to real time western SWE reports. Using this data from the Natural Resources Conservation Service (NRCS), I was able to construct a plot of the western United States and create watershed borders with USGS NHDPlus HUC4 code from an nhdplustools rstudio package. With this visualization I added the percent of median SWE data to overlay on the plot via a color scale and finally pushed towards completing the app.</p>
 <p>To finalize my project I asked Posit AI Assistant to assist me with creating a compelling app, with the prompt “Make DroughtPrediction.qmd into a shiny app[1].” it took all of my sourced and completed code and produced my first draft off the app. After restructuring what had been created I also asked for the assistant to “create a toggle-able popup table, which when you select a state can give immediate information on all the relevant watersheds %SWE and drought likelihood.” This finalized my project and completed my shiny app.</p>
 <p>My question of interest was, “Can I produce a shiny app that will allow me to select state and watershed and using SWE data predict if drought will be likely in the coming year?” Thus wrangling the aforementioned sources I was able to join the data together via re-coding the names of stations and then applying the watershed and %SWE data over a plot of the United States.</p>
@@ -200,171 +201,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="code-for-data-wrangling-and-plot" class="level1">
 <h1>Code for Data Wrangling and Plot:</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bslib)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'bslib'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:utils':
-
-    page</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bsicons)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'DT'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:shiny':
-
-    dataTableOutput, renderDataTable</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nhdplusTools)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'readr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:rvest':
-
-    guess_encoding</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Data Wrangling: </span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: Pull URL</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?report=Western+US"</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>page <span class="ot">&lt;-</span> <span class="fu">read_html</span>(url)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: Pull table</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">&lt;-</span> <span class="fu">html_nodes</span>(page, <span class="st">"table"</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>percentswe <span class="ot">&lt;-</span> <span class="fu">html_table</span>(tables[[<span class="dv">2</span>]], <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(percentswe)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">"name"</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="do">##Watershed Data Table (Assistance from AI to find this [1])</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>western_huc4 <span class="ot">&lt;-</span> <span class="fu">get_huc</span>(</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">c</span>(<span class="st">"1901"</span>,<span class="st">"1902"</span>,<span class="st">"1903"</span>,<span class="st">"1904"</span>,<span class="st">"1905"</span>,<span class="st">"1906"</span>,<span class="st">"1001"</span>,<span class="st">"1002"</span>,<span class="st">"1003"</span>,<span class="st">"1004"</span>,<span class="st">"1005"</span>,<span class="st">"1006"</span>,<span class="st">"1007"</span>,<span class="st">"1008"</span>,</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>         <span class="st">"1301"</span>,<span class="st">"1302"</span>,<span class="st">"1303"</span>,<span class="st">"1401"</span>,<span class="st">"1402"</span>,<span class="st">"1403"</span>,<span class="st">"1404"</span>,<span class="st">"1405"</span>,<span class="st">"1406"</span>,<span class="st">"1407"</span>,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>         <span class="st">"1501"</span>,<span class="st">"1502"</span>,<span class="st">"1503"</span>,<span class="st">"1504"</span>,<span class="st">"1505"</span>,<span class="st">"1506"</span>,<span class="st">"1507"</span>,<span class="st">"1508"</span>,</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>         <span class="st">"1601"</span>,<span class="st">"1602"</span>,<span class="st">"1603"</span>,<span class="st">"1604"</span>,</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>         <span class="st">"1701"</span>,<span class="st">"1702"</span>,<span class="st">"1703"</span>,<span class="st">"1704"</span>,<span class="st">"1705"</span>,<span class="st">"1706"</span>,<span class="st">"1707"</span>,<span class="st">"1708"</span>,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>         <span class="st">"1801"</span>,<span class="st">"1802"</span>,<span class="st">"1803"</span>,<span class="st">"1804"</span>,<span class="st">"1805"</span>),</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"huc04"</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>defaulting to 2020 version of WBD</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic US state background Data</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>us_states <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">"state"</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>western <span class="ot">&lt;-</span> us_states <span class="sc">|&gt;</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"oregon"</span>,<span class="st">"california"</span>,<span class="st">"nevada"</span>,<span class="st">"arizona"</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"wyoming"</span>,<span class="st">"colorado"</span>,<span class="st">"utah"</span>,<span class="st">"montana"</span>,<span class="st">"idaho"</span>,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"washington"</span>,<span class="st">"new mexico"</span>, <span class="st">"alaska"</span>))</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="do">## I want to make my data into CSV to make it easier so just incase my code breaks this is my safety</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(percentswe, <span class="st">"PercentSWE.csv"</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(western_huc4, <span class="st">"westernhuc4.csv"</span>)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="do">##Skipping the first two columns cleans my data also renaming</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>PercentSWE <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"PercentSWE.csv"</span>, <span class="at">skip =</span> <span class="dv">2</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(PercentSWE) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"SWE_sites"</span>, <span class="st">"SWE_pct_median"</span>, <span class="st">"precip_sites"</span>, <span class="st">"precip_pct_median"</span>, <span class="st">"region"</span>)</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="do">##Recoding WesternHuc4</span></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>western_huc4 <span class="ot">&lt;-</span> western_huc4 <span class="sc">|&gt;</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">toupper</span>(name))</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="do">##Matching all the names [1]</span></span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>PercentSWE <span class="ot">&lt;-</span> PercentSWE <span class="sc">|&gt;</span></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">case_when</span>(</span>
-<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"GUNNISON RIVER BASIN"</span>                        <span class="sc">~</span> <span class="st">"GUNNISON"</span>,</span>
-<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER COLORADO RIVER BASIN"</span>                  <span class="sc">~</span> <span class="st">"COLORADO HEADWATERS"</span>,</span>
-<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"YAMPA AND WHITE RIVER BASINS"</span>                <span class="sc">~</span> <span class="st">"WHITE-YAMPA"</span>,</span>
-<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"DIRTY DEVIL"</span>                                 <span class="sc">~</span> <span class="st">"UPPER COLORADO-DIRTY DEVIL"</span>,</span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER RIO GRANDE BASIN"</span>                      <span class="sc">~</span> <span class="st">"RIO GRANDE HEADWATERS"</span>,</span>
-<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER RIO GRANDE BASIN - New Mexico"</span>         <span class="sc">~</span> <span class="st">"RIO GRANDE-ELEPHANT BUTTE"</span>,</span>
-<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"MIMBRES RIVER BASIN"</span>                         <span class="sc">~</span> <span class="st">"RIO GRANDE-MIMBRES"</span>,</span>
-<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"GILA RIVER BASIN"</span>                            <span class="sc">~</span> <span class="st">"UPPER GILA"</span>,</span>
-<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SALT RIVER BASIN"</span>                            <span class="sc">~</span> <span class="st">"SALT"</span>,</span>
-<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"LITTLE COLORADO RIVER BASIN"</span>                 <span class="sc">~</span> <span class="st">"LITTLE COLORADO"</span>,        </span>
-<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SMITH, JUDITH, AND MUSSELSHELL RIVER BASINS"</span> <span class="sc">~</span> <span class="st">"MISSOURI-MUSSELSHELL"</span>,</span>
-<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SUN, TETON AND MARIAS RIVER BASINS"</span>          <span class="sc">~</span> <span class="st">"MISSOURI-MARIAS"</span>,</span>
-<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"MISSOURI MAINSTEM RIVER BASIN"</span>               <span class="sc">~</span> <span class="st">"MISSOURI-POPLAR"</span>,</span>
-<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"MILK RIVER BASIN"</span>                            <span class="sc">~</span> <span class="st">"MILK"</span>,</span>
-<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER YELLOWSTONE RIVER BASIN"</span>               <span class="sc">~</span> <span class="st">"UPPER YELLOWSTONE"</span>,</span>
-<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"BIGHORN RIVER BASIN (WYOMING)"</span>               <span class="sc">~</span> <span class="st">"BIG HORN"</span>,</span>
-<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SAN JUAN RIVER BASIN"</span>                        <span class="sc">~</span> <span class="st">"UPPER COLORADO-DOLORES"</span>,</span>
-<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER GREEN RIVER"</span>                           <span class="sc">~</span> <span class="st">"GREAT DIVIDE-UPPER GREEN"</span>,</span>
-<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"LOWER GREEN RIVER"</span>                           <span class="sc">~</span> <span class="st">"LOWER GREEN"</span>,</span>
-<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"LOWER SNAKE, WALLA WALLA"</span>                    <span class="sc">~</span> <span class="st">"LOWER SNAKE"</span>,</span>
-<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER HUMBOLDT RIVER"</span>                        <span class="sc">~</span> <span class="st">"BLACK ROCK DESERT-HUMBOLDT"</span>,</span>
-<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"BEAR RIVER"</span>                                  <span class="sc">~</span> <span class="st">"BEAR"</span>,</span>
-<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"ESCALANTE RIVER"</span>                             <span class="sc">~</span> <span class="st">"ESCALANTE DESERT-SEVIER LAKE"</span>,</span>
-<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"LOWER PEND OREILLE"</span>                          <span class="sc">~</span> <span class="st">"KOOTENAI-PEND OREILLE-SPOKANE"</span>,</span>
-<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"UPPER YAKIMA"</span>                                <span class="sc">~</span> <span class="st">"YAKIMA"</span>,</span>
-<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"CENTRAL COLUMBIA"</span>                            <span class="sc">~</span> <span class="st">"MIDDLE COLUMBIA"</span>,</span>
-<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"KLAMATH"</span>                                     <span class="sc">~</span> <span class="st">"KLAMATH-NORTHERN CALIFORNIA COASTAL"</span>,</span>
-<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"NORTHERN GREAT BASIN"</span>                             <span class="sc">~</span> <span class="st">"GREAT SALT LAKE"</span>,        </span>
-<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SNAKE BASIN ABOVE PALISADES"</span>                 <span class="sc">~</span> <span class="st">"UPPER SNAKE"</span>,            </span>
-<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SNAKE BASIN ABOVE AMERICAN FALLS"</span>            <span class="sc">~</span> <span class="st">"MIDDLE SNAKE"</span>,</span>
-<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SOUTHEAST ALASKA BASIN"</span>            <span class="sc">~</span> <span class="st">"SOUTHEAST ALASKA"</span>,</span>
-<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>    name <span class="sc">==</span> <span class="st">"SOUTHEAST ALASKA BASIN"</span>            <span class="sc">~</span> <span class="st">"SOUTH CENTRAL ALASKA"</span>,</span>
-<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> name</span>
-<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="do">##Remove * and ""</span></span>
-<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>PercentSWE <span class="ot">&lt;-</span> PercentSWE <span class="sc">|&gt;</span></span>
-<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SWE_pct_median =</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>, <span class="st">""</span>, SWE_pct_median)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: There was 1 warning in `mutate()`.
-ℹ In argument: `SWE_pct_median = as.numeric(gsub("\\*", "", SWE_pct_median))`.
-Caused by warning:
-! NAs introduced by coercion</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Join </span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df_joined <span class="ot">&lt;-</span> western_huc4 <span class="sc">|&gt;</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(PercentSWE, <span class="at">by =</span> <span class="st">"name"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot - fill by SWE percent of median, gray for unmatched basins</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> western, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group),</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"gray90"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> df_joined, <span class="fu">aes</span>(<span class="at">fill =</span> SWE_pct_median),</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(<span class="at">data =</span> df_joined, <span class="fu">aes</span>(<span class="at">label =</span> name),</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">size =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"red"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"blue"</span>,</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">100</span>,</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">na.value =</span> <span class="st">"gray80"</span>,</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">"% of Median SWE"</span>) <span class="sc">+</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">125</span>, <span class="sc">-</span><span class="dv">102</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">50</span>)) <span class="sc">+</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Western US HUC4 Watershed Basins - % of Median SWE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot - fill by SWE percent of median, gray for unmatched basins</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> western, <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"gray90"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> df_joined, <span class="fu">aes</span>(<span class="at">fill =</span> SWE_pct_median),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(<span class="at">data =</span> df_joined, <span class="fu">aes</span>(<span class="at">label =</span> name),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">size =</span> <span class="fl">1.8</span>) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(<span class="at">low =</span> <span class="st">"red"</span>, <span class="at">mid =</span> <span class="st">"white"</span>, <span class="at">high =</span> <span class="st">"blue"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">midpoint =</span> <span class="dv">100</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">na.value =</span> <span class="st">"gray80"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">"% of Median SWE"</span>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_sf</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">125</span>, <span class="sc">-</span><span class="dv">102</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">50</span>)) <span class="sc">+</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Western US HUC4 Watershed Basins - % of Median SWE"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
 give correct results for longitude/latitude data</code></pre>
@@ -376,7 +227,7 @@ give correct results for longitude/latitude data</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Observe no values are over 100, which is the midpoint and the median from the last 30 years.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Observe no values are over 100, which is the midpoint and the median from the last 30 years.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Overall App <img src="images/clipboard-1286573709.png" class="img-fluid"> Table View <img src="images/clipboard-3800726449.png" class="img-fluid"> Selected State <img src="images/clipboard-620318681.png" class="img-fluid"></p>
 <p>After exploring my app and data, drought is highly likely in the western United States this year. Due to decreased snowfall and lack of overall precipitation it will be imperative for dams to be opened to support ecosystems, agriculture, and human recreation.</p>

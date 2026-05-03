@@ -31,745 +31,15 @@
 <section id="code-for-data-wrangling-and-plot" class="level1">
 <h1>Code for Data Wrangling and Plot:</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(shiny)</span>
-<span id="cb1-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(bslib)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'bslib'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:utils':
-
-    page</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(bsicons)</span>
-<span id="cb4-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(ggplot2)</span>
-<span id="cb4-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(dplyr)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'dplyr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
-
-    filter, lag</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(sf)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Linking to GEOS 3.13.0, GDAL 3.8.5, PROJ 9.5.1; sf_use_s2() is TRUE</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(DT)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'DT'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:shiny':
-
-    dataTableOutput, renderDataTable</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(rvest)</span>
-<span id="cb13-2"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(nhdplusTools)</span>
-<span id="cb13-3"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(httr)</span>
-<span id="cb13-4"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">library</span>(readr)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'readr'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:rvest':
-
-    guess_encoding</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Data Wrangling: </span></span>
-<span id="cb16-2"></span>
-<span id="cb16-3"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Step 1: Pull URL</span></span>
-<span id="cb16-4">url <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"https://wcc.sc.egov.usda.gov/reports/UpdateReport.html?report=Western+US"</span></span>
-<span id="cb16-5">page <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read_html</span>(url)</span>
-<span id="cb16-6"></span>
-<span id="cb16-7"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Step 2: Pull table</span></span>
-<span id="cb16-8">tables <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">html_nodes</span>(page, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"table"</span>)</span>
-<span id="cb16-9">percentswe <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">html_table</span>(tables[[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>]], <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span>)</span>
-<span id="cb16-10"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">names</span>(percentswe)[<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>] <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span></span>
-<span id="cb16-11"></span>
-<span id="cb16-12"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Watershed Data Table (Assistance from AI to find this [1])</span></span>
-<span id="cb16-13">western_huc4 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">get_huc</span>(</span>
-<span id="cb16-14">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">id =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1901"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1902"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1903"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1904"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1905"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1906"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1001"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1002"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1003"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1004"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1005"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1006"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1007"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1008"</span>,</span>
-<span id="cb16-15">         <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1301"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1302"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1303"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1401"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1402"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1403"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1404"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1405"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1406"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1407"</span>,</span>
-<span id="cb16-16">         <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1501"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1502"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1503"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1504"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1505"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1506"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1507"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1508"</span>,</span>
-<span id="cb16-17">         <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1601"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1602"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1603"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1604"</span>,</span>
-<span id="cb16-18">         <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1701"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1702"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1703"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1704"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1705"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1706"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1707"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1708"</span>,</span>
-<span id="cb16-19">         <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1801"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1802"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1803"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1804"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"1805"</span>),</span>
-<span id="cb16-20">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"huc04"</span></span>
-<span id="cb16-21">) </span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>defaulting to 2020 version of WBD</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># Basic US state background Data</span></span>
-<span id="cb18-2">us_states <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">map_data</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"state"</span>)</span>
-<span id="cb18-3">western <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> us_states <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb18-4">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">filter</span>(region <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"oregon"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"california"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"nevada"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"arizona"</span>,</span>
-<span id="cb18-5">                        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"wyoming"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"colorado"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"utah"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"montana"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"idaho"</span>,</span>
-<span id="cb18-6">                        <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"washington"</span>,<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"new mexico"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"alaska"</span>))</span>
-<span id="cb18-7"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">## I want to make my data into CSV to make it easier so just incase my code breaks this is my safety</span></span>
-<span id="cb18-8"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">write_csv</span>(percentswe, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"PercentSWE.csv"</span>)</span>
-<span id="cb18-9"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">write_csv</span>(western_huc4, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"westernhuc4.csv"</span>)</span>
-<span id="cb18-10"></span>
-<span id="cb18-11"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Skipping the first two columns cleans my data also renaming</span></span>
-<span id="cb18-12">PercentSWE <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">read.csv</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"PercentSWE.csv"</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">skip =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">header =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">stringsAsFactors =</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span>)</span>
-<span id="cb18-13"><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">colnames</span>(PercentSWE) <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SWE_sites"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SWE_pct_median"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"precip_sites"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"precip_pct_median"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"region"</span>)</span>
-<span id="cb18-14"></span>
-<span id="cb18-15"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Recoding WesternHuc4</span></span>
-<span id="cb18-16">western_huc4 <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> western_huc4 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb18-17">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">name =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">toupper</span>(name))</span>
-<span id="cb18-18"></span>
-<span id="cb18-19"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Matching all the names [1]</span></span>
-<span id="cb18-20">PercentSWE <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> PercentSWE <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb18-21">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">name =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">case_when</span>(</span>
-<span id="cb18-22">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GUNNISON RIVER BASIN"</span>                        <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GUNNISON"</span>,</span>
-<span id="cb18-23">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER COLORADO RIVER BASIN"</span>                  <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"COLORADO HEADWATERS"</span>,</span>
-<span id="cb18-24">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"YAMPA AND WHITE RIVER BASINS"</span>                <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"WHITE-YAMPA"</span>,</span>
-<span id="cb18-25">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"DIRTY DEVIL"</span>                                 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER COLORADO-DIRTY DEVIL"</span>,</span>
-<span id="cb18-26">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER RIO GRANDE BASIN"</span>                      <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"RIO GRANDE HEADWATERS"</span>,</span>
-<span id="cb18-27">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER RIO GRANDE BASIN - New Mexico"</span>         <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"RIO GRANDE-ELEPHANT BUTTE"</span>,</span>
-<span id="cb18-28">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MIMBRES RIVER BASIN"</span>                         <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"RIO GRANDE-MIMBRES"</span>,</span>
-<span id="cb18-29">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GILA RIVER BASIN"</span>                            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER GILA"</span>,</span>
-<span id="cb18-30">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SALT RIVER BASIN"</span>                            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SALT"</span>,</span>
-<span id="cb18-31">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LITTLE COLORADO RIVER BASIN"</span>                 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LITTLE COLORADO"</span>,        </span>
-<span id="cb18-32">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SMITH, JUDITH, AND MUSSELSHELL RIVER BASINS"</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MISSOURI-MUSSELSHELL"</span>,</span>
-<span id="cb18-33">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SUN, TETON AND MARIAS RIVER BASINS"</span>          <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MISSOURI-MARIAS"</span>,</span>
-<span id="cb18-34">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MISSOURI MAINSTEM RIVER BASIN"</span>               <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MISSOURI-POPLAR"</span>,</span>
-<span id="cb18-35">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MILK RIVER BASIN"</span>                            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MILK"</span>,</span>
-<span id="cb18-36">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER YELLOWSTONE RIVER BASIN"</span>               <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER YELLOWSTONE"</span>,</span>
-<span id="cb18-37">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"BIGHORN RIVER BASIN (WYOMING)"</span>               <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"BIG HORN"</span>,</span>
-<span id="cb18-38">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SAN JUAN RIVER BASIN"</span>                        <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER COLORADO-DOLORES"</span>,</span>
-<span id="cb18-39">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER GREEN RIVER"</span>                           <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GREAT DIVIDE-UPPER GREEN"</span>,</span>
-<span id="cb18-40">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LOWER GREEN RIVER"</span>                           <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LOWER GREEN"</span>,</span>
-<span id="cb18-41">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LOWER SNAKE, WALLA WALLA"</span>                    <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LOWER SNAKE"</span>,</span>
-<span id="cb18-42">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER HUMBOLDT RIVER"</span>                        <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"BLACK ROCK DESERT-HUMBOLDT"</span>,</span>
-<span id="cb18-43">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"BEAR RIVER"</span>                                  <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"BEAR"</span>,</span>
-<span id="cb18-44">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ESCALANTE RIVER"</span>                             <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ESCALANTE DESERT-SEVIER LAKE"</span>,</span>
-<span id="cb18-45">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LOWER PEND OREILLE"</span>                          <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"KOOTENAI-PEND OREILLE-SPOKANE"</span>,</span>
-<span id="cb18-46">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER YAKIMA"</span>                                <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"YAKIMA"</span>,</span>
-<span id="cb18-47">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"CENTRAL COLUMBIA"</span>                            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MIDDLE COLUMBIA"</span>,</span>
-<span id="cb18-48">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"KLAMATH"</span>                                     <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"KLAMATH-NORTHERN CALIFORNIA COASTAL"</span>,</span>
-<span id="cb18-49">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"NORTHERN GREAT BASIN"</span>                             <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"GREAT SALT LAKE"</span>,        </span>
-<span id="cb18-50">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SNAKE BASIN ABOVE PALISADES"</span>                 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"UPPER SNAKE"</span>,            </span>
-<span id="cb18-51">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SNAKE BASIN ABOVE AMERICAN FALLS"</span>            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"MIDDLE SNAKE"</span>,</span>
-<span id="cb18-52">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SOUTHEAST ALASKA BASIN"</span>            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SOUTHEAST ALASKA"</span>,</span>
-<span id="cb18-53">    name <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SOUTHEAST ALASKA BASIN"</span>            <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"SOUTH CENTRAL ALASKA"</span>,</span>
-<span id="cb18-54">    <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">TRUE</span> <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> name</span>
-<span id="cb18-55">  ))</span>
-<span id="cb18-56"></span>
-<span id="cb18-57"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Remove * and ""</span></span>
-<span id="cb18-58"></span>
-<span id="cb18-59">PercentSWE <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> PercentSWE <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb18-60">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">SWE_pct_median =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">as.numeric</span>(<span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">gsub</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"</span><span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">\\</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">*"</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">""</span>, SWE_pct_median)))</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: There was 1 warning in `mutate()`.
-ℹ In argument: `SWE_pct_median = as.numeric(gsub("\\*", "", SWE_pct_median))`.
-Caused by warning:
-! NAs introduced by coercion</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="do" style="color: #5E5E5E;
-background-color: null;
-font-style: italic;">##Join </span></span>
-<span id="cb20-2">df_joined <span class="ot" style="color: #003B4F;
-background-color: null;
-font-style: inherit;">&lt;-</span> western_huc4 <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span id="cb20-3">  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">left_join</span>(PercentSWE, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by =</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"name"</span>)</span></code></pre></div></div>
-</div>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Plot - fill by SWE percent of median, gray for unmatched basins</span></span>
-<span id="cb21-2"><span class="fu" style="color: #4758AB;
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-3">  <span class="fu" style="color: #4758AB;
+<span id="cb1-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_polygon</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -782,7 +52,7 @@ background-color: null;
 font-style: inherit;">y =</span> lat, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group =</span> group),</span>
-<span id="cb21-4">               <span class="at" style="color: #657422;
+<span id="cb1-4">               <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -793,7 +63,7 @@ background-color: null;
 font-style: inherit;">"white"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-5">  <span class="fu" style="color: #4758AB;
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -802,7 +72,7 @@ background-color: null;
 font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">fill =</span> SWE_pct_median),</span>
-<span id="cb21-6">          <span class="at" style="color: #657422;
+<span id="cb1-6">          <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -813,7 +83,7 @@ background-color: null;
 font-style: inherit;">0.6</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-7">  <span class="fu" style="color: #4758AB;
+<span id="cb1-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_sf_text</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -822,14 +92,14 @@ background-color: null;
 font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">label =</span> name),</span>
-<span id="cb21-8">               <span class="at" style="color: #657422;
+<span id="cb1-8">               <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1.8</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-9">  <span class="fu" style="color: #4758AB;
+<span id="cb1-9">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">scale_fill_gradient2</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -844,24 +114,24 @@ background-color: null;
 font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"blue"</span>,</span>
-<span id="cb21-10">                       <span class="at" style="color: #657422;
+<span id="cb1-10">                       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">midpoint =</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>,</span>
-<span id="cb21-11">                       <span class="at" style="color: #657422;
+<span id="cb1-11">                       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">na.value =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"gray80"</span>,</span>
-<span id="cb21-12">                       <span class="at" style="color: #657422;
+<span id="cb1-12">                       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">name =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"% of Median SWE"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-13">  <span class="fu" style="color: #4758AB;
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">coord_sf</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -886,12 +156,12 @@ background-color: null;
 font-style: inherit;">50</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-14">  <span class="fu" style="color: #4758AB;
+<span id="cb1-14">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb21-15">  <span class="fu" style="color: #4758AB;
+<span id="cb1-15">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -909,7 +179,7 @@ give correct results for longitude/latitude data</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="do" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="do" style="color: #5E5E5E;
 background-color: null;
 font-style: italic;">##Observe no values are over 100, which is the midpoint and the median from the last 30 years.</span></span></code></pre></div></div>
 </div>
