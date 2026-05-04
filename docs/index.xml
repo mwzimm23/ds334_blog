@@ -21,8 +21,9 @@
 
 
 
-<section id="introduction" class="level1">
-<h1>Introduction:</h1>
+<section id="drought-prediction-blog-post" class="level1">
+<h1>Drought Prediction Blog Post:</h1>
+<p>Introduction:</p>
 <p>This tool gives an immediate outlook on how a harvest and aquatic-recreational year will play out, as it uses snow water equivalent (SWE) data from 1991 to 2020 to then compare it to real time western SWE reports. Using this data from the Natural Resources Conservation Service (NRCS), I was able to construct a plot of the western United States and create watershed borders with USGS NHDPlus HUC4 code from an nhdplustools rstudio package. With this visualization I added the percent of median SWE data to overlay on the plot via a color scale and finally pushed towards completing the app.</p>
 <p>To finalize my project I asked Posit AI Assistant to assist me with creating a compelling app, with the prompt “Make DroughtPrediction.qmd into a shiny app[1].” it took all of my sourced and completed code and produced my first draft off the app. After restructuring what had been created I also asked for the assistant to “create a toggle-able popup table, which when you select a state can give immediate information on all the relevant watersheds %SWE and drought likelihood.” This finalized my project and completed my shiny app.</p>
 <p>My question of interest was, “Can I produce a shiny app that will allow me to select state and watershed and using SWE data predict if drought will be likely in the coming year?” Thus wrangling the aforementioned sources I was able to join the data together via re-coding the names of stations and then applying the watershed and %SWE data over a plot of the United States.</p>
@@ -203,7 +204,201 @@ font-style: italic;">##Observe no values are over 100, which is the midpoint and
   <category>analysis</category>
   <guid>https://your-website-url.example.com/posts/post-with-code/blogpost4/</guid>
   <pubDate>Sun, 03 May 2026 04:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/post-with-code/blogpost4/SanJuanBluggPoint.png" medium="image" type="image/png"/>
+</item>
+<item>
+  <title>Drought Prediction Blog Post</title>
+  <dc:creator>Mason Zimmer</dc:creator>
+  <link>https://your-website-url.example.com/posts/post-with-code/blogpost4/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="drought-prediction-blog-post" class="level1">
+<h1>Drought Prediction Blog Post:</h1>
+<p>Introduction:</p>
+<p>This tool gives an immediate outlook on how a harvest and aquatic-recreational year will play out, as it uses snow water equivalent (SWE) data from 1991 to 2020 to then compare it to real time western SWE reports. Using this data from the Natural Resources Conservation Service (NRCS), I was able to construct a plot of the western United States and create watershed borders with USGS NHDPlus HUC4 code from an nhdplustools rstudio package. With this visualization I added the percent of median SWE data to overlay on the plot via a color scale and finally pushed towards completing the app.</p>
+<p>To finalize my project I asked Posit AI Assistant to assist me with creating a compelling app, with the prompt “Make DroughtPrediction.qmd into a shiny app[1].” it took all of my sourced and completed code and produced my first draft off the app. After restructuring what had been created I also asked for the assistant to “create a toggle-able popup table, which when you select a state can give immediate information on all the relevant watersheds %SWE and drought likelihood.” This finalized my project and completed my shiny app.</p>
+<p>My question of interest was, “Can I produce a shiny app that will allow me to select state and watershed and using SWE data predict if drought will be likely in the coming year?” Thus wrangling the aforementioned sources I was able to join the data together via re-coding the names of stations and then applying the watershed and %SWE data over a plot of the United States.</p>
+<p>With this project I furthered my abilities in data wrangling, visualization production, app creation, and understanding how to us artificial intelligence as a tool. By creating this app, I was able to provide relevant information that can be very useful to recreation and professional water goes, while also furthering my appreciation and love of environmental statistics. I look forward to continuing projects on ecological data and advancing my skills as a statistician.</p>
+</section>
+<section id="code-for-data-wrangling-and-plot" class="level1">
+<h1>Code for Data Wrangling and Plot:</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot - fill by SWE percent of median, gray for unmatched basins</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_polygon</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> western, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> long, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> lat, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> group),</span>
+<span id="cb1-4">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray90"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> df_joined, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> SWE_pct_median),</span>
+<span id="cb1-6">          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"steelblue"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> df_joined, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label =</span> name),</span>
+<span id="cb1-8">               <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_gradient2</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">low =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">mid =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">high =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>,</span>
+<span id="cb1-10">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">midpoint =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>,</span>
+<span id="cb1-11">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">na.value =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"gray80"</span>,</span>
+<span id="cb1-12">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"% of Median SWE"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xlim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">125</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">102</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ylim =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb1-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Western US HUC4 Watershed Basins - % of Median SWE"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in st_point_on_surface.sfc(sf::st_zm(x)): st_point_on_surface may not
+give correct results for longitude/latitude data</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post-with-code/blogpost4/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">##Observe no values are over 100, which is the midpoint and the median from the last 30 years.</span></span></code></pre></div></div>
+</div>
+<p>Overall App <img src="https://your-website-url.example.com/posts/post-with-code/blogpost4/images/clipboard-1286573709.png" class="img-fluid"> Table View <img src="https://your-website-url.example.com/posts/post-with-code/blogpost4/images/clipboard-3800726449.png" class="img-fluid"> Selected State <img src="https://your-website-url.example.com/posts/post-with-code/blogpost4/images/clipboard-620318681.png" class="img-fluid"></p>
+<p>After exploring my app and data, drought is highly likely in the western United States this year. Due to decreased snowfall and lack of overall precipitation it will be imperative for dams to be opened to support ecosystems, agriculture, and human recreation.</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion:</h1>
+<p>To continue this project in the following year, I plan to attempt to recreate this app into something with greater capabilities than just shiny, and implement a river selector for each waterway in each watershed. With this selection I would like the viewer to be able to view real time hydro-graph date, which provides cubic feet per second flow in a given aquatic system. By being able to view all this pertinent information in one place, it would provide an invaluable resource for “River Soldiers”, those who fight for the rights of water, and recreationists alike. Further I believe that this app could be used to inform the greater public of the mega-drought, and hopefully lead to national attention and intervention.</p>
+</section>
+<section id="connection-to-class" class="level1">
+<h1>Connection to Class:</h1>
+<p>Using class learned functions to pull from websites, join, rename, rewrite, create csv files, and make visualizations. I was able to use the tools that I learned over the past year of data science courses to create the bare bone essential pieces of my project. Furthermore I used shinyapp skills to structure an app that makes the entire process of interpreting the data instantaneous, allowing for the user to select their relevant state and watershed. Overall this project was crucial to my confidence in data science and I look forward to expanding my skills further.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>news</category>
+  <category>code</category>
+  <category>analysis</category>
+  <guid>https://your-website-url.example.com/posts/post-with-code/blogpost4/</guid>
+  <pubDate>Sun, 03 May 2026 04:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/post-with-code/blogpost4/SanJuanBluffPoint.png" medium="image" type="image/png"/>
 </item>
 <item>
   <title>Blog Post 3: Endangered Species Analysis</title>
